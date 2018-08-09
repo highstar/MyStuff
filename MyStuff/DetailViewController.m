@@ -26,12 +26,25 @@
 
 - (void)presentImagePickerUsingCamera:(BOOL)useCamera
 {
+    imagePopoverController = nil;
+    
     UIImagePickerController *cameraUI = [UIImagePickerController new];
     cameraUI.sourceType = (useCamera ? UIImagePickerControllerSourceTypeCamera
                            :UIImagePickerControllerSourceTypePhotoLibrary);
     cameraUI.mediaTypes = @[(NSString*)kUTTypeImage];
     cameraUI.delegate = self;
-    [self presentViewController:cameraUI animated:YES completion:nil];
+    if (useCamera || UIDevice.currentDevice.userInterfaceIdiom == UIUserInterfaceIdiomPhone)
+    {
+        [self presentViewController:cameraUI animated:YES completion:nil];
+    }
+    else
+    {
+        imagePopoverController = [[UIPopoverController alloc] initWithContentViewController:cameraUI];
+        [imagePopoverController presentPopoverFromRect:self.imageView.frame
+                                                inView:self.view
+                              permittedArrowDirections:UIPopoverArrowDirectionAny
+                                              animated:YES];
+    }
 }
 
 - (void)configureView {
@@ -74,6 +87,8 @@
 
 - (IBAction)chosePicture:(id)sender
 {
+    [self dismissKeyboard:self];
+    
     if (self.detailItem == nil)
         return;
     BOOL hasPhotoLibrary = [UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary];
@@ -152,7 +167,20 @@
 
 - (void)dismissImagePicker
 {
+    if(imagePopoverController != nil)
+    {
+        [imagePopoverController dismissPopoverAnimated:YES];
+        imagePopoverController = nil;
+    }
+    else
+    {
     [self dismissViewControllerAnimated:YES completion:nil];
+    }
+}
+
+- (IBAction)dismissKeyboard:(id)sender
+{
+    [self.view endEditing:NO];
 }
 
 @end
