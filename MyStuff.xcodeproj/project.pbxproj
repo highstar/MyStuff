@@ -16,6 +16,7 @@
 		AEB9E26F2111B76900B6F8EE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB9E26E2111B76900B6F8EE /* main.m */; };
 		AEB9E2792111B76900B6F8EE /* MyStuffTests.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB9E2782111B76900B6F8EE /* MyStuffTests.m */; };
 		AEB9E2842111B76900B6F8EE /* MyStuffUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB9E2832111B76900B6F8EE /* MyStuffUITests.m */; };
+		AEB9E2932111B94400B6F8EE /* MyWhatsit.m in Sources */ = {isa = PBXBuildFile; fileRef = AEB9E2922111B94400B6F8EE /* MyWhatsit.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,6 +55,8 @@
 		AEB9E27F2111B76900B6F8EE /* MyStuffUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MyStuffUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		AEB9E2832111B76900B6F8EE /* MyStuffUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyStuffUITests.m; sourceTree = "<group>"; };
 		AEB9E2852111B76900B6F8EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AEB9E2912111B94400B6F8EE /* MyWhatsit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MyWhatsit.h; sourceTree = "<group>"; };
+		AEB9E2922111B94400B6F8EE /* MyWhatsit.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MyWhatsit.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +118,8 @@
 				AEB9E26A2111B76900B6F8EE /* LaunchScreen.storyboard */,
 				AEB9E26D2111B76900B6F8EE /* Info.plist */,
 				AEB9E26E2111B76900B6F8EE /* main.m */,
+				AEB9E2912111B94400B6F8EE /* MyWhatsit.h */,
+				AEB9E2922111B94400B6F8EE /* MyWhatsit.m */,
 			);
 			path = MyStuff;
 			sourceTree = "<group>";
@@ -269,6 +274,7 @@
 			files = (
 				AEB9E2612111B76400B6F8EE /* MasterViewController.m in Sources */,
 				AEB9E25E2111B76400B6F8EE /* AppDelegate.m in Sources */,
+				AEB9E2932111B94400B6F8EE /* MyWhatsit.m in Sources */,
 				AEB9E26F2111B76900B6F8EE /* main.m in Sources */,
 				AEB9E2642111B76400B6F8EE /* DetailViewController.m in Sources */,
 			);

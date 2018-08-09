@@ -8,13 +8,41 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "MyWhatsit.h"
 
-@interface MasterViewController ()
+@interface MasterViewController () {
+    NSMutableArray *things;
+}
 
 @property NSMutableArray *objects;
 @end
 
 @implementation MasterViewController
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+- (void)awakeFromNib
+{
+    things = [@[
+                [[MyWhatsit alloc] initWithName:@"Gort"
+                                       location:@"den"],
+                [[MyWhatsit alloc] initWithName:@"Disappearing TARDIS mug"
+                                       location:@"kitchen"],
+                [[MyWhatsit alloc] initWithName:@"Robot USB drive"
+                                       location:@"office"],
+                [[MyWhatsit alloc] initWithName:@"Sad Robot USB hub"
+                                       location:@"office"],
+                [[MyWhatsit alloc] initWithName:@"Solar Powered Bunny"
+                                       location:@"office"]
+                ] mutableCopy];
+    [super awakeFromNib];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(whatsitDidChangedNotification:)
+                                                 name:kWhatsitDidChangedNotification object:nil];
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,10 +62,15 @@
 
 
 - (void)insertNewObject:(id)sender {
-    if (!self.objects) {
-        self.objects = [[NSMutableArray alloc] init];
+    if (!things) {
+        things = [[NSMutableArray alloc] init];
     }
-    [self.objects insertObject:[NSDate date] atIndex:0];
+    
+    static unsigned int itemNumber = 1;
+    NSString *newItemName = [NSString stringWithFormat:@"My Item %u", itemNumber++];
+    MyWhatsit *newItem = [[MyWhatsit alloc] initWithName:newItemName location:nil];
+    [things insertObject:newItem atIndex:0];
+    
     NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
     [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
@@ -48,10 +81,14 @@
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     if ([[segue identifier] isEqualToString:@"showDetail"]) {
         NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = self.objects[indexPath.row];
+        MyWhatsit *object = things[indexPath.row];
+        
         DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
         [controller setDetailItem:object];
+        
         controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
+        
+        
         controller.navigationItem.leftItemsSupplementBackButton = YES;
     }
 }
@@ -65,18 +102,21 @@
 
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.objects.count;
+    return things.count;
 }
 
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+- (UITableViewCell *)tableView:(UITableView *)tableView
+         cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"
+                                                            forIndexPath:indexPath];
 
-    NSDate *object = self.objects[indexPath.row];
-    cell.textLabel.text = [object description];
+    MyWhatsit *thing = things[indexPath.row];
+    cell.textLabel.text = thing.name;
+    cell.detailTextLabel.text = thing.location;
+    cell.imageView.image = thing.viewImage;
     return cell;
 }
-
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
@@ -86,12 +126,22 @@
 
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
     if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.objects removeObjectAtIndex:indexPath.row];
+        [things removeObjectAtIndex:indexPath.row];
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
 }
 
+- (void)whatsitDidChangedNotification:(NSNotification*)notification
+{
+    NSUInteger index = [things indexOfObject:notification.object];
+    if (index != NSNotFound)
+    {
+        NSIndexPath *path = [NSIndexPath indexPathForItem:index inSection:0];
+        [self.tableView reloadRowsAtIndexPaths:@[path]
+                              withRowAnimation:UITableViewRowAnimationNone];
+    }
+}
 
 @end
